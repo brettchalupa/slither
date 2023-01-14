@@ -2,7 +2,7 @@
 
 A polished _Snake_ clone for web, desktop, and mobile by [Brett Chalupa](https://www.brettchalupa.com).
 
-Built with [DragonRuby Game Toolkit](https://dragonruby.org/toolkit/game) v4.1.
+Built with [DragonRuby Game Toolkit](https://dragonruby.org/toolkit/game) Pro v4.1.
 
 ## Debug Shortcuts
 
