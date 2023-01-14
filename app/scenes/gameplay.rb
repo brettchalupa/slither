@@ -16,19 +16,19 @@ module Scene
         return Scene.switch(args, :paused, reset: true)
       end
 
-      args.state.game_over ||= false
-      args.state.parts ||= []
-      args.state.head ||= {
+      args.state.gameplay.game_over ||= false
+      args.state.gameplay.parts ||= []
+      args.state.gameplay.head ||= {
         x: TILE_SIZE * 5, y: TILE_SIZE * 4, new_direction: :up,
-        w: TILE_SIZE, h: TILE_SIZE, r: 120, g: 220, b: 120
-      }
-      args.state.apple ||= spawn_apple(args)
-      head = args.state.head
+        w: TILE_SIZE, h: TILE_SIZE,
+      }.merge!(GREEN)
+      args.state.gameplay.apple ||= spawn_apple(args)
+      head = args.state.gameplay.head
       args.outputs.labels << label(
-        "SCORE: #{args.state.parts.length}",
+        "#{text(:length)}: #{args.state.gameplay.parts.length}",
         x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
 
-      unless args.state.game_over
+      unless args.state.gameplay.game_over
         if args.state.tick_count % 12 == 0
           prev_pos = [head.x, head.y]
 
@@ -44,14 +44,14 @@ module Scene
             head.x += TILE_SIZE
           end
 
-          args.state.parts.each.with_index do |p, i|
+          args.state.gameplay.parts.each.with_index do |p, i|
             next_prev_pos = [p.x, p.y]
             p.x, p.y = prev_pos
             prev_pos = next_prev_pos
           end
 
-          if args.state.parts.any? { |p| head.intersect_rect?(p) }
-            args.state.game_over = true
+          if args.state.gameplay.parts.any? { |p| head.intersect_rect?(p) }
+            args.state.gameplay.game_over = true
           end
         end
 
@@ -73,40 +73,47 @@ module Scene
           head.new_direction = :down if args.inputs.down
         end
 
-        if head.intersect_rect?(args.state.apple)
-          args.state.parts << head.clone.merge({ r: 60, b: 34 })
-          args.state.apple = spawn_apple(args)
+        if head.intersect_rect?(args.state.gameplay.apple)
+          play_sfx(args, :menu)
+          args.state.gameplay.parts << head.clone.merge(DARK_GREEN)
+          args.state.gameplay.apple = spawn_apple(args)
         end
-
       else
-        args.outputs.labels << [
-          label(
-            "GAME OVER", x: args.grid.w / 2, y: 500,
-            align: ALIGN_CENTER, size: SIZE_LG,
-            font: FONT_BOLD_ITALIC,
-          ),
-          label(
-            "Press SPACE to Restart",
-            x: args.grid.w / 2, y: 360,
-            align: ALIGN_CENTER, size: SIZE_MD,
-            font: FONT_ITALIC,
-          )
-        ]
-        if args.inputs.keyboard.key_down.space
-          $gtk.reset
-        end
+        game_over(args)
       end
 
       draw_bg(args, BLUE)
       args.outputs.solids << [
-        args.state.parts, args.state.apple, args.state.head
+        args.state.gameplay.parts,
+        args.state.gameplay.apple,
+        args.state.gameplay.head
       ]
+    end
+
+    def game_over(args)
+      args.outputs.labels << [
+        label(
+          :game_over, x: args.grid.w / 2, y: 500,
+          align: ALIGN_CENTER, size: SIZE_LG,
+          font: FONT_BOLD_ITALIC,
+        ),
+        label(
+          :restart,
+          x: args.grid.w / 2, y: 360,
+          align: ALIGN_CENTER, size: SIZE_MD,
+          font: FONT_ITALIC,
+        )
+      ]
+      if primary_down?(args.inputs)
+        play_sfx(args, :select)
+        Scene.switch(args, :gameplay, reset: true)
+      end
     end
 
     def spawn_apple(args)
       { x: rand(args.grid.w / TILE_SIZE) * TILE_SIZE,
         y: rand(args.grid.h / TILE_SIZE) * TILE_SIZE,
-        w: TILE_SIZE, h: TILE_SIZE, r: 200, g: 40, b: 40 }
+        w: TILE_SIZE, h: TILE_SIZE }.merge!(DARK_RED)
     end
 
   end

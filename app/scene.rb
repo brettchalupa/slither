@@ -27,6 +27,10 @@ module Scene
 
         # you can also add custom reset logic as-needed for specific scenes
         # here
+        case scene
+        when :gameplay
+          args.state.gameplay = nil
+        end
       end
 
       args.state.scene = scene
