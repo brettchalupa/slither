@@ -1,6 +1,6 @@
 devid=brettchalupa
 devtitle=Brett Chalupa
-gameid=slither
+gameid=slither-4-1-render-target
 gametitle=Slither
 version=0.1
 icon=metadata/icon.png

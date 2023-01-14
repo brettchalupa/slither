@@ -2,6 +2,7 @@
 def init(args)
   GameSetting.load_settings(args)
   args.gtk.hide_cursor
+  args.render_target(:block).solids << [0, 0, 1280, 100, 244, 220, 100]
 end
 
 def tick(args)
@@ -14,6 +15,16 @@ def tick(args)
   args.state.scene ||= :main_menu
 
   Scene.send("tick_#{args.state.scene}", args)
+
+  args.outputs.sprites << { x: 0,
+                            y: 620,
+                            w: 1280,
+                            h: 100,
+                            path: :block,
+                            source_x: 0,
+                            source_y: 0,
+                            source_w: 1280,
+                            source_h: 100 }
 
   debug_tick(args)
 end
