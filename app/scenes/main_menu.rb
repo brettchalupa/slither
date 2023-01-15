@@ -41,9 +41,9 @@ module Scene
 
       sprites = []
       sprites << {
-        x: args.grid.w / 2 - 200, y: args.grid.top - 240,
+        x: args.grid.w / 2 - 300, y: args.grid.top - 300,
         path: Sprite.for(:logo),
-        w: 400, h: 150,
+        w: 600, h: 225,
       }
       sprites << {
         x: 50, y: 80,
