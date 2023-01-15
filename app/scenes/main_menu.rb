@@ -25,9 +25,6 @@ module Scene
 
       labels = []
       labels << label(
-        title.upcase, x: args.grid.w / 2, y: args.grid.top - 100,
-        size: SIZE_LG, align: ALIGN_CENTER, font: FONT_BOLD_ITALIC)
-      labels << label(
         "#{text(:made_by)} #{dev_title}",
         x: args.grid.left + 24, y: 48,
         size: SIZE_XS, align: ALIGN_LEFT)
@@ -41,7 +38,19 @@ module Scene
         size: SIZE_XS, align: ALIGN_RIGHT)
 
       args.outputs.labels << labels
-    end
 
+      sprites = []
+      sprites << {
+        x: args.grid.w / 2 - 200, y: args.grid.top - 240,
+        path: Sprite.for(:logo),
+        w: 400, h: 150,
+      }
+      sprites << {
+        x: 50, y: 80,
+        path: Sprite.for(:bud),
+        w: 150, h: 104,
+      }
+      args.outputs.sprites << sprites
+    end
   end
 end
