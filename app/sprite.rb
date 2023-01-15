@@ -4,6 +4,7 @@ module Sprite
   SPRITES = {
     bud: "sprites/bud.png",
     logo: "sprites/logo.png",
+    spritesheet: "sprites/spritesheet.png",
   }
 
   class << self
@@ -16,4 +17,3 @@ module Sprite
     end
   end
 end
-

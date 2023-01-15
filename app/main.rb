@@ -8,6 +8,7 @@ require "app/scene.rb"
 require "app/game_setting.rb"
 require "app/sound.rb"
 require "app/text.rb"
+require "app/tile.rb"
 
 require "app/scenes/gameplay.rb"
 require "app/scenes/main_menu.rb"
