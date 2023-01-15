@@ -24,7 +24,7 @@ module Scene
       }.merge!(GREEN)
       head = args.state.gameplay.head
       parts = args.state.gameplay.parts
-      args.state.gameplay.apple ||= spawn_apple(args, head, parts)
+      args.state.gameplay.gem ||= spawn_gem(args, head, parts)
       args.outputs.labels << label(
         "#{text(:length)}: #{args.state.gameplay.parts.length}",
         x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
@@ -74,10 +74,10 @@ module Scene
           head.new_direction = :down if args.inputs.down
         end
 
-        if head.intersect_rect?(args.state.gameplay.apple)
+        if head.intersect_rect?(args.state.gameplay.gem)
           play_sfx(args, :menu)
           args.state.gameplay.parts << head.clone.merge(DARK_GREEN)
-          args.state.gameplay.apple = spawn_apple(args, head, parts)
+          args.state.gameplay.gem = spawn_gem(args, head, parts)
         end
       else
         game_over(args)
@@ -86,7 +86,7 @@ module Scene
       draw_bg(args, BLUE)
       args.outputs.solids << [
         args.state.gameplay.parts,
-        args.state.gameplay.apple,
+        args.state.gameplay.gem,
         args.state.gameplay.head
       ]
     end
@@ -111,16 +111,16 @@ module Scene
       end
     end
 
-    def spawn_apple(args, head, parts)
-      apple = { x: rand(args.grid.w / TILE_SIZE) * TILE_SIZE,
+    def spawn_gem(args, head, parts)
+      gem = { x: rand(args.grid.w / TILE_SIZE) * TILE_SIZE,
                 y: rand(args.grid.h / TILE_SIZE) * TILE_SIZE,
                 w: TILE_SIZE, h: TILE_SIZE }.merge!(DARK_RED)
 
-      if apple.intersect_rect?(head) || parts.any? { |p| p.intersect_rect?(apple) }
-        apple = spawn_apple(args, head, parts)
+      if gem.intersect_rect?(head) || parts.any? { |p| p.intersect_rect?(gem) }
+        gem = spawn_gem(args, head, parts)
       end
 
-      apple
+      gem
     end
   end
 end
