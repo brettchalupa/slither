@@ -6,6 +6,7 @@ Built with [DragonRuby Game Toolkit](https://dragonruby.org/toolkit/game) Pro v4
 
 ## Debug Shortcuts
 
+- <kbd>9</kbd> — eat gem
 - <kbd>0</kbd> — display debug details (ex: framerate)
 - <kbd>i</kbd> — reload sprites from disk
 - <kbd>r</kbd> — reset the entire game state

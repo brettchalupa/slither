@@ -24,7 +24,7 @@ module Scene
       }.merge(Tile.for(:head))
       head = args.state.gameplay.head
       parts = args.state.gameplay.parts
-      args.state.gameplay.gem ||= spawn_gem(args, head, parts)
+      args.state.gameplay.gem ||= spawn_gem(args)
       args.outputs.labels << label(
         "#{text(:length)}: #{args.state.gameplay.parts.length}",
         x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
@@ -134,11 +134,7 @@ module Scene
         end
 
         if head.intersect_rect?(args.state.gameplay.gem)
-          play_sfx(args, :menu)
-          args.state.gameplay.parts << head.clone
-            .merge({ a: 0 })
-            .merge(Tile.for(:tail))
-          args.state.gameplay.gem = spawn_gem(args, head, parts)
+          eat_gem(args)
         end
       else
         game_over(args)
@@ -172,18 +168,26 @@ module Scene
       end
     end
 
-    def spawn_gem(args, head, parts)
+    def spawn_gem(args)
       gem = {
         x: rand(args.grid.w / TILE_SIZE) * TILE_SIZE,
         y: rand(args.grid.h / TILE_SIZE) * TILE_SIZE,
         w: TILE_SIZE, h: TILE_SIZE
       }.merge(Tile.for(:gem))
 
-      if gem.intersect_rect?(head) || parts.any? { |p| p.intersect_rect?(gem) }
-        gem = spawn_gem(args, head, parts)
+      if [].push(args.state.gameplay.head).concat(args.state.gameplay.parts).any? { |p| p.intersect_rect?(gem) }
+        gem = spawn_gem(args)
       end
 
       gem
+    end
+
+    def eat_gem(args)
+      play_sfx(args, :menu)
+      args.state.gameplay.parts << args.state.gameplay.head.clone
+        .merge({ a: 0 })
+        .merge(Tile.for(:tail))
+      args.state.gameplay.gem = spawn_gem(args)
     end
   end
 end

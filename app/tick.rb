@@ -30,6 +30,11 @@ def debug_tick(args)
     args.state.render_debug_details = !args.state.render_debug_details
   end
 
+  if args.inputs.keyboard.key_down.nine
+    play_sfx(args, :select)
+    Scene.eat_gem(args)
+  end
+
   if args.inputs.keyboard.key_down.i
     play_sfx(args, :select)
     Sprite.reset_all(args)
