@@ -30,7 +30,7 @@ module Scene
         x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
 
       unless args.state.gameplay.game_over
-        if args.state.tick_count % 12 == 0
+        if args.state.tick_count % 12 == 0 && !args.state.gameplay.stop_movement
           prev_pos = [head.x, head.y]
           prev_angle = head.angle
 

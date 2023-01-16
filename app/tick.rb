@@ -38,6 +38,11 @@ def debug_tick(args)
     Scene.eat_gem(args)
   end
 
+  if args.inputs.keyboard.key_down.eight
+    play_sfx(args, :select)
+    args.state.gameplay.stop_movement = !args.state.gameplay.stop_movement
+  end
+
   if args.inputs.keyboard.key_down.i
     play_sfx(args, :select)
     Sprite.reset_all(args)
