@@ -33,6 +33,10 @@ module Scene
           prev_pos = [head.x, head.y]
           prev_angle = head.angle
 
+          if args.state.gameplay.parts.length >= 1
+            head.merge!(Tile.for(:head))
+          end
+
           head.direction = head.new_direction
           case head.direction
           when DIR_UP
@@ -58,11 +62,14 @@ module Scene
             p.x, p.y = prev_pos
             p.a = 255
             p.angle = prev_angle
-            p.merge!(Tile.for(:body)) unless i + 1 == parts.length
+            p.corner = false # reset
             if p.angle == 180
               p.flip_vertically = true
             else
               p.flip_vertically = false
+            end
+            unless i + 1 == parts.length
+              p.merge!(Tile.for(:body))
             end
             prev_pos = next_prev_pos
             prev_angle = next_prev_angle
@@ -80,6 +87,7 @@ module Scene
               if (pre.top != p.top && nex.top == p.top) ||
                 (pre.top == p.top && nex.top != p.top)
                 p.merge!(Tile.for(:corner))
+                p.corner = true
                 p.flip_vertically = false
                 p.flip_horizontally = false
                 if pre.top > p.top && p.left < nex.left # LL
@@ -107,6 +115,22 @@ module Scene
 
           if parts.length == 1
             parts.last.angle = head.angle
+          elsif parts.length > 1
+            before_tail = parts[-2]
+            tail = parts[-1]
+            if before_tail.corner
+              if before_tail.top > tail.top
+                tail.angle = 270
+              elsif before_tail.top < tail.top
+                tail.angle = 90
+              elsif before_tail.left < tail.left
+                tail.angle = 0
+              elsif before_tail.left > tail.left
+                tail.angle = 180
+              end
+            else
+              parts[-1].angle = before_tail.angle
+            end
           end
 
           if args.state.gameplay.parts.any? { |p| head.intersect_rect?(p) }
@@ -191,12 +215,6 @@ module Scene
       if args.state.gameplay.movement_tick_delay > 1 && args.state.gameplay.parts.length % 5 == 0
         args.state.gameplay.movement_tick_delay -= 1
       end
-
-      # no longer head_only
-      if args.state.gameplay.parts.length == 1
-        args.state.gameplay.head.merge!(Tile.for(:head))
-      end
-
 
       args.state.gameplay.gem = spawn_gem(args)
     end

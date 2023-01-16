@@ -38,7 +38,17 @@ module Menu
             y: label.y - 22,
             w: 16,
             h: 16,
+            key: option[:key],
           }.merge(WHITE)
+        end
+      end
+
+      if args.inputs.mouse.click
+        labels.each do |l|
+          if args.inputs.mouse.inside_rect?(l.merge(w: 200, h: 100))
+            o = options.select { |o| o[:key] == l[:key] }
+            o[:on_select].call(args)
+          end
         end
       end
 
