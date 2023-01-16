@@ -14,6 +14,7 @@ module Scene
         return Scene.switch(args, :paused, reset: true)
       end
 
+      args.state.gameplay.movement_tick_delay ||= 20
       args.state.gameplay.game_over ||= false
       args.state.gameplay.parts ||= []
       args.state.gameplay.head ||= {
@@ -28,7 +29,7 @@ module Scene
         x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
 
       unless args.state.gameplay.game_over
-        if args.state.tick_count % 12 == 0 && !args.state.gameplay.stop_movement
+        if args.state.tick_count % args.state.gameplay.movement_tick_delay == 0 && !args.state.gameplay.stop_movement
           prev_pos = [head.x, head.y]
           prev_angle = head.angle
 
@@ -185,6 +186,12 @@ module Scene
       args.state.gameplay.parts << args.state.gameplay.head.clone
         .merge({ a: 0 })
         .merge(Tile.for(:tail))
+
+      # increase speed every 5 parts
+      if args.state.gameplay.movement_tick_delay > 1 && args.state.gameplay.parts.length % 5 == 0
+        args.state.gameplay.movement_tick_delay -= 1
+      end
+
       args.state.gameplay.gem = spawn_gem(args)
     end
   end
