@@ -23,6 +23,7 @@ TEXT = {
   settings: "Settings",
   sfx: "Sound Effects",
   start: "Start",
+  tilemap_tester: "Tilemap Tester",
 }
 
 # Gets the text for the passed in `key`. Raises if it does not exist. We don't

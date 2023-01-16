@@ -14,6 +14,13 @@ module Scene
         },
       ]
 
+      if debug?
+        options << {
+          key: :tilemap_tester,
+          on_select: -> (args) { Scene.switch(args, :tilemap_tester) }
+        }
+      end
+
       if args.gtk.platform?(:desktop)
         options << {
           key: :quit,

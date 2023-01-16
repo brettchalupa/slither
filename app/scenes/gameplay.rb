@@ -1,7 +1,5 @@
 module Scene
   class << self
-    TILE_SIZE = 80
-
     def tick_gameplay(args)
       # focus tracking
       if !args.state.has_focus && args.inputs.keyboard.has_focus
@@ -19,8 +17,8 @@ module Scene
       args.state.gameplay.game_over ||= false
       args.state.gameplay.parts ||= []
       args.state.gameplay.head ||= {
-        x: TILE_SIZE * 5, y: TILE_SIZE * 4, new_direction: DIR_UP,
-        w: TILE_SIZE, h: TILE_SIZE,
+        x: Tile::SIZE * 5, y: Tile::SIZE * 4, new_direction: DIR_UP,
+        w: Tile::SIZE, h: Tile::SIZE,
       }.merge(Tile.for(:head))
       head = args.state.gameplay.head
       parts = args.state.gameplay.parts
@@ -37,13 +35,13 @@ module Scene
           head.direction = head.new_direction
           case head.direction
           when DIR_UP
-            head.y += TILE_SIZE
+            head.y += Tile::SIZE
           when DIR_DOWN
-            head.y -= TILE_SIZE
+            head.y -= Tile::SIZE
           when DIR_LEFT
-            head.x -= TILE_SIZE
+            head.x -= Tile::SIZE
           when DIR_RIGHT
-            head.x += TILE_SIZE
+            head.x += Tile::SIZE
           end
 
           if head.direction == DIR_RIGHT
@@ -170,9 +168,9 @@ module Scene
 
     def spawn_gem(args)
       gem = {
-        x: rand(args.grid.w / TILE_SIZE) * TILE_SIZE,
-        y: rand(args.grid.h / TILE_SIZE) * TILE_SIZE,
-        w: TILE_SIZE, h: TILE_SIZE
+        x: rand(args.grid.w / Tile::SIZE) * Tile::SIZE,
+        y: rand(args.grid.h / Tile::SIZE) * Tile::SIZE,
+        w: Tile::SIZE, h: Tile::SIZE
       }.merge(Tile.for(:gem))
 
       if [].push(args.state.gameplay.head).concat(args.state.gameplay.parts).any? { |p| p.intersect_rect?(gem) }

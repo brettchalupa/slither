@@ -1,4 +1,5 @@
 module Tile
+  SIZE = 80
   MAP = {
     body: {
       tile_x: 740,
