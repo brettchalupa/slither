@@ -20,7 +20,7 @@ module Scene
       args.state.gameplay.head ||= {
         x: Tile::SIZE * 5, y: Tile::SIZE * 4, new_direction: DIR_UP,
         w: Tile::SIZE, h: Tile::SIZE,
-      }.merge(Tile.for(:head))
+      }.merge(Tile.for(:head_only))
       head = args.state.gameplay.head
       parts = args.state.gameplay.parts
       args.state.gameplay.gem ||= spawn_gem(args)
@@ -191,6 +191,12 @@ module Scene
       if args.state.gameplay.movement_tick_delay > 1 && args.state.gameplay.parts.length % 5 == 0
         args.state.gameplay.movement_tick_delay -= 1
       end
+
+      # no longer head_only
+      if args.state.gameplay.parts.length == 1
+        args.state.gameplay.head.merge!(Tile.for(:head))
+      end
+
 
       args.state.gameplay.gem = spawn_gem(args)
     end

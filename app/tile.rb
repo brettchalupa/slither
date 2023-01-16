@@ -2,20 +2,24 @@ module Tile
   SIZE = 80
   MAP = {
     body: {
-      tile_x: 740,
-      tile_y: 754,
+      tile_x: 504,
+      tile_y: 270,
     },
     corner: {
-      tile_x: 729,
-      tile_y: 50,
+      tile_x: 1176,
+      tile_y: 78,
     },
     head: {
-      tile_x: 486,
-      tile_y: 754,
+      tile_x: 490,
+      tile_y: 746,
+    },
+    head_only: {
+      tile_x: 45,
+      tile_y: 1036,
     },
     tail: {
       tile_x: 260,
-      tile_y: 280,
+      tile_y: 272,
     },
     gem: {
       tile_x: 260,
