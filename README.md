@@ -4,6 +4,9 @@ A polished _Snake_ clone for web, desktop, and mobile by [Brett Chalupa](https:/
 
 Built with [DragonRuby Game Toolkit](https://dragonruby.org/toolkit/game) Pro v4.1.
 
+[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)  
+To the extent possible under law, [Brett Chalupa](https://brettchalupa.itch.io./slither) has waived all copyright and related or neighboring rights to Slither. This work is published from: United States.
+
 ## Debug Shortcuts
 
 - <kbd>8</kbd> — pause gameplay movement
