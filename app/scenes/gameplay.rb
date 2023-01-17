@@ -15,6 +15,7 @@ module Scene
       end
 
       args.state.gameplay.movement_tick_delay ||= 20
+      args.state.gameplay.tick_counter ||= 0
       args.state.gameplay.game_over ||= false
       args.state.gameplay.parts ||= []
       args.state.gameplay.head ||= {
@@ -29,7 +30,9 @@ module Scene
         x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
 
       unless args.state.gameplay.game_over
-        if args.state.tick_count % args.state.gameplay.movement_tick_delay == 0 && !args.state.gameplay.stop_movement
+        if args.state.gameplay.tick_counter >= args.state.gameplay.movement_tick_delay
+          args.state.gameplay.tick_counter = 0
+
           prev_pos = [head.x, head.y]
           prev_angle = head.angle
 
@@ -186,7 +189,13 @@ module Scene
           if args.state.gameplay.parts.any? { |p| head.intersect_rect?(p) }
             args.state.gameplay.game_over = true
           end
+        else
+          if !args.state.gameplay.stop_movement
+            args.state.gameplay.tick_counter += 1
+          end
         end
+
+        debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
 
         if head.left >= args.grid.right
           head.x = args.grid.left
