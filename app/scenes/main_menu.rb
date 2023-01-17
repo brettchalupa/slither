@@ -33,15 +33,15 @@ module Scene
       labels = []
       labels << label(
         "#{text(:made_by)} #{dev_title}",
-        x: args.grid.left + 24, y: 48,
+        x: 24.from_left, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_LEFT)
       labels << label(
         :controls_title,
-        x: args.grid.right - 24, y: 84,
+        x: 24.from_right, y: 84.from_bottom,
         size: SIZE_SM, align: ALIGN_RIGHT)
       labels << label(
         args.inputs.controller_one.connected ? :controls_gamepad : :controls_keyboard,
-        x: args.grid.right - 24, y: 48,
+        x: 24.from_right, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_RIGHT)
 
       args.outputs.labels << labels
