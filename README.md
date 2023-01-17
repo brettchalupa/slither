@@ -1,5 +1,7 @@
 # Slither
 
+![Slither in bubble letters with an eye and tongue coming out of the S next to a red gem](https://user-images.githubusercontent.com/928367/212915843-3fb4cc63-d3d0-4fb8-bca7-f49481170c14.png)
+
 A polished _Snake_ clone for web, desktop, and mobile by [Brett Chalupa](https://www.brettchalupa.com).
 
 Built with [DragonRuby Game Toolkit](https://dragonruby.org/toolkit/game) Pro v4.1.
