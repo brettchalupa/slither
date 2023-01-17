@@ -32,6 +32,10 @@ module Scene
 
       labels = []
       labels << label(
+        "v#{version}",
+        x: 24.from_left, y: 24.from_top,
+        size: SIZE_XS, align: ALIGN_LEFT)
+      labels << label(
         "#{text(:made_by)} #{dev_title}",
         x: 24.from_left, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_LEFT)
