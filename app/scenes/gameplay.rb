@@ -90,7 +90,45 @@ module Scene
                 p.corner = true
                 p.flip_vertically = false
                 p.flip_horizontally = false
-                if pre.top > p.top && p.left < nex.left # LL
+
+
+                # wrap stuff
+                if nex.y - p.y > Tile::SIZE && pre.top == p.top && pre.left < p.left # UR wrap
+                  p.angle = 90
+                elsif nex.y - p.y > Tile::SIZE && pre.top == p.top && pre.left > p.left # UL wrap
+                  p.angle = 180
+                elsif p.y - nex.y > Tile::SIZE && pre.top == p.top && pre.left < p.left # LR wrap
+                  p.angle = 0
+                elsif p.y - nex.y > Tile::SIZE && pre.top == p.top && pre.left > p.left # LL wrap
+                  p.angle = 270
+                elsif p.x - nex.x > Tile::SIZE && pre.left == p.left && pre.top > p.top # LL wrap
+                  p.angle = 270
+                elsif p.x - nex.x > Tile::SIZE && pre.left == p.left && pre.top < p.top # UL wrap
+                  p.angle = 180
+                elsif nex.x - p.x > Tile::SIZE && pre.left == p.left && pre.top < p.top # UR wrap
+                  p.angle = 90
+                elsif nex.x - p.x > Tile::SIZE && pre.left == p.left && pre.top > p.top # LR wrap
+                  p.angle = 0
+                elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top > p.top # LL wrap
+                  p.angle = 270
+                elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UL wrap
+                  p.angle = 180
+                elsif pre.top == p.top && pre.x - p.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UR wrap
+                  p.angle = 90
+                elsif pre.top == p.top && pre.x - p.x > Tile::SIZE && nex.left == p.left && nex.top > p.top # LR wrap
+                  p.angle = 0
+                elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UL wrap
+                  p.angle = 180
+                elsif pre.left == p.left && p.y - pre.y > Tile::SIZE && nex.top == p.top && nex.left < p.left # LR wrap
+                  p.angle = 0
+                elsif pre.left == p.left && p.y - pre.y > Tile::SIZE && nex.top == p.top && nex.left > p.left # LL wrap
+                  p.angle = 270
+                elsif pre.left == p.left && pre.y - p.y > Tile::SIZE && nex.top == p.top && nex.left < p.left # UR wrap
+                  p.angle = 90
+                elsif pre.left == p.left && pre.y - p.y > Tile::SIZE && nex.top == p.top && nex.left > p.left # UL wrap
+                  p.angle = 180
+                # normal corners
+                elsif pre.top > p.top && p.left < nex.left # LL
                   p.angle = 270
                 elsif pre.top > p.top && p.left > nex.left # LR
                   p.angle = 0
@@ -119,14 +157,26 @@ module Scene
             before_tail = parts[-2]
             tail = parts[-1]
             if before_tail.corner
-              if before_tail.top > tail.top
-                tail.angle = 270
-              elsif before_tail.top < tail.top
-                tail.angle = 90
-              elsif before_tail.left < tail.left
-                tail.angle = 0
-              elsif before_tail.left > tail.left
-                tail.angle = 180
+              if (before_tail.x - tail.x).abs <= Tile::SIZE && (before_tail.y - tail.y).abs <= Tile::SIZE
+                if before_tail.top > tail.top
+                  tail.angle = 270
+                elsif before_tail.top < tail.top
+                  tail.angle = 90
+                elsif before_tail.left < tail.left
+                  tail.angle = 0
+                elsif before_tail.left > tail.left
+                  tail.angle = 180
+                end
+              else # wrap stuff
+                if before_tail.top > tail.top
+                  tail.angle = 90
+                elsif before_tail.top < tail.top
+                  tail.angle = 270
+                elsif before_tail.left < tail.left
+                  tail.angle = 180
+                elsif before_tail.left > tail.left
+                  tail.angle = 0
+                end
               end
             else
               parts[-1].angle = before_tail.angle
