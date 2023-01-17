@@ -78,113 +78,9 @@ module Scene
             prev_angle = next_prev_angle
           end
 
-          # check for corners
-          parts.each.with_index do |p, i|
-            if i != parts.length - 1
-              if i == 0
-                pre = head
-              else
-                pre = parts[i - 1]
-              end
-              nex = parts[i + 1]
-              if (pre.top != p.top && nex.top == p.top) ||
-                (pre.top == p.top && nex.top != p.top)
-                p.merge!(Tile.for(:corner))
-                p.corner = true
-                p.flip_vertically = false
-                p.flip_horizontally = false
+          check_for_corners(args, head, parts)
 
-
-                # wrap stuff
-                if nex.y - p.y > Tile::SIZE && pre.top == p.top && pre.left < p.left # UR wrap
-                  p.angle = 90
-                elsif nex.y - p.y > Tile::SIZE && pre.top == p.top && pre.left > p.left # UL wrap
-                  p.angle = 180
-                elsif p.y - nex.y > Tile::SIZE && pre.top == p.top && pre.left < p.left # LR wrap
-                  p.angle = 0
-                elsif p.y - nex.y > Tile::SIZE && pre.top == p.top && pre.left > p.left # LL wrap
-                  p.angle = 270
-                elsif p.x - nex.x > Tile::SIZE && pre.left == p.left && pre.top > p.top # LL wrap
-                  p.angle = 270
-                elsif p.x - nex.x > Tile::SIZE && pre.left == p.left && pre.top < p.top # UL wrap
-                  p.angle = 180
-                elsif nex.x - p.x > Tile::SIZE && pre.left == p.left && pre.top < p.top # UR wrap
-                  p.angle = 90
-                elsif nex.x - p.x > Tile::SIZE && pre.left == p.left && pre.top > p.top # LR wrap
-                  p.angle = 0
-                elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top > p.top # LL wrap
-                  p.angle = 270
-                elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UL wrap
-                  p.angle = 180
-                elsif pre.top == p.top && pre.x - p.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UR wrap
-                  p.angle = 90
-                elsif pre.top == p.top && pre.x - p.x > Tile::SIZE && nex.left == p.left && nex.top > p.top # LR wrap
-                  p.angle = 0
-                elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UL wrap
-                  p.angle = 180
-                elsif pre.left == p.left && p.y - pre.y > Tile::SIZE && nex.top == p.top && nex.left < p.left # LR wrap
-                  p.angle = 0
-                elsif pre.left == p.left && p.y - pre.y > Tile::SIZE && nex.top == p.top && nex.left > p.left # LL wrap
-                  p.angle = 270
-                elsif pre.left == p.left && pre.y - p.y > Tile::SIZE && nex.top == p.top && nex.left < p.left # UR wrap
-                  p.angle = 90
-                elsif pre.left == p.left && pre.y - p.y > Tile::SIZE && nex.top == p.top && nex.left > p.left # UL wrap
-                  p.angle = 180
-                # normal corners
-                elsif pre.top > p.top && p.left < nex.left # LL
-                  p.angle = 270
-                elsif pre.top > p.top && p.left > nex.left # LR
-                  p.angle = 0
-                elsif pre.top < p.top && p.left < nex.left # UL
-                  p.angle = 180
-                elsif pre.top < p.top && p.left > nex.left # UR
-                  p.angle = 90
-                elsif pre.left > p.left && p.top > nex.top # UL
-                  p.angle = 180
-                elsif pre.left > p.left && p.top < nex.top # LL
-                  p.angle = 270
-                elsif pre.left < p.left && p.top > nex.top # UR
-                  p.angle = 90
-                elsif pre.left < p.left && p.top < nex.top # LR
-                  p.angle = 0
-                else
-                  puts "missing case"
-                end
-              end
-            end
-          end
-
-          if parts.length == 1
-            parts.last.angle = head.angle
-          elsif parts.length > 1
-            before_tail = parts[-2]
-            tail = parts[-1]
-            if before_tail.corner
-              if (before_tail.x - tail.x).abs <= Tile::SIZE && (before_tail.y - tail.y).abs <= Tile::SIZE
-                if before_tail.top > tail.top
-                  tail.angle = 270
-                elsif before_tail.top < tail.top
-                  tail.angle = 90
-                elsif before_tail.left < tail.left
-                  tail.angle = 0
-                elsif before_tail.left > tail.left
-                  tail.angle = 180
-                end
-              else # wrap stuff
-                if before_tail.top > tail.top
-                  tail.angle = 90
-                elsif before_tail.top < tail.top
-                  tail.angle = 270
-                elsif before_tail.left < tail.left
-                  tail.angle = 180
-                elsif before_tail.left > tail.left
-                  tail.angle = 0
-                end
-              end
-            else
-              parts[-1].angle = before_tail.angle
-            end
-          end
+          position_tail(args, head, parts)
 
           if args.state.gameplay.parts.any? { |p| head.intersect_rect?(p) }
             args.state.gameplay.game_over = true
@@ -194,8 +90,6 @@ module Scene
             args.state.gameplay.tick_counter += 1
           end
         end
-
-        debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
 
         if head.left >= args.grid.right
           head.x = args.grid.left
@@ -224,6 +118,7 @@ module Scene
         game_over(args)
       end
 
+      debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
       draw_bg(args, BLUE)
       args.outputs.sprites << [
         args.state.gameplay.parts,
@@ -278,6 +173,120 @@ module Scene
       end
 
       args.state.gameplay.gem = spawn_gem(args)
+    end
+
+    # this is some gross conditional stuff but I don't know a better way to go
+    # about it
+    def check_for_corners(args, head, parts)
+      # check for corners
+      parts.each.with_index do |p, i|
+        if i != parts.length - 1
+          if i == 0
+            pre = head
+          else
+            pre = parts[i - 1]
+          end
+          nex = parts[i + 1]
+          if (pre.top != p.top && nex.top == p.top) ||
+              (pre.top == p.top && nex.top != p.top)
+            p.merge!(Tile.for(:corner))
+            p.corner = true
+            p.flip_vertically = false
+            p.flip_horizontally = false
+
+
+            # wrap stuff
+            if nex.y - p.y > Tile::SIZE && pre.top == p.top && pre.left < p.left # UR wrap
+              p.angle = 90
+            elsif nex.y - p.y > Tile::SIZE && pre.top == p.top && pre.left > p.left # UL wrap
+              p.angle = 180
+            elsif p.y - nex.y > Tile::SIZE && pre.top == p.top && pre.left < p.left # LR wrap
+              p.angle = 0
+            elsif p.y - nex.y > Tile::SIZE && pre.top == p.top && pre.left > p.left # LL wrap
+              p.angle = 270
+            elsif p.x - nex.x > Tile::SIZE && pre.left == p.left && pre.top > p.top # LL wrap
+              p.angle = 270
+            elsif p.x - nex.x > Tile::SIZE && pre.left == p.left && pre.top < p.top # UL wrap
+              p.angle = 180
+            elsif nex.x - p.x > Tile::SIZE && pre.left == p.left && pre.top < p.top # UR wrap
+              p.angle = 90
+            elsif nex.x - p.x > Tile::SIZE && pre.left == p.left && pre.top > p.top # LR wrap
+              p.angle = 0
+            elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top > p.top # LL wrap
+              p.angle = 270
+            elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UL wrap
+              p.angle = 180
+            elsif pre.top == p.top && pre.x - p.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UR wrap
+              p.angle = 90
+            elsif pre.top == p.top && pre.x - p.x > Tile::SIZE && nex.left == p.left && nex.top > p.top # LR wrap
+              p.angle = 0
+            elsif pre.top == p.top && p.x - pre.x > Tile::SIZE && nex.left == p.left && nex.top < p.top # UL wrap
+              p.angle = 180
+            elsif pre.left == p.left && p.y - pre.y > Tile::SIZE && nex.top == p.top && nex.left < p.left # LR wrap
+              p.angle = 0
+            elsif pre.left == p.left && p.y - pre.y > Tile::SIZE && nex.top == p.top && nex.left > p.left # LL wrap
+              p.angle = 270
+            elsif pre.left == p.left && pre.y - p.y > Tile::SIZE && nex.top == p.top && nex.left < p.left # UR wrap
+              p.angle = 90
+            elsif pre.left == p.left && pre.y - p.y > Tile::SIZE && nex.top == p.top && nex.left > p.left # UL wrap
+              p.angle = 180
+              # normal corners
+            elsif pre.top > p.top && p.left < nex.left # LL
+              p.angle = 270
+            elsif pre.top > p.top && p.left > nex.left # LR
+              p.angle = 0
+            elsif pre.top < p.top && p.left < nex.left # UL
+              p.angle = 180
+            elsif pre.top < p.top && p.left > nex.left # UR
+              p.angle = 90
+            elsif pre.left > p.left && p.top > nex.top # UL
+              p.angle = 180
+            elsif pre.left > p.left && p.top < nex.top # LL
+              p.angle = 270
+            elsif pre.left < p.left && p.top > nex.top # UR
+              p.angle = 90
+            elsif pre.left < p.left && p.top < nex.top # LR
+              p.angle = 0
+            else
+              puts "missing case"
+            end
+          end
+        end
+      end
+    end
+
+    def position_tail(args, head, parts)
+      if parts.length == 1
+        parts.last.angle = head.angle
+      elsif parts.length > 1
+        before_tail = parts[-2]
+        tail = parts[-1]
+        if before_tail.corner
+          if (before_tail.x - tail.x).abs <= Tile::SIZE && (before_tail.y - tail.y).abs <= Tile::SIZE
+            if before_tail.top > tail.top
+              tail.angle = 270
+            elsif before_tail.top < tail.top
+              tail.angle = 90
+            elsif before_tail.left < tail.left
+              tail.angle = 0
+            elsif before_tail.left > tail.left
+              tail.angle = 180
+            end
+          else # wrap stuff
+            if before_tail.top > tail.top
+              tail.angle = 90
+            elsif before_tail.top < tail.top
+              tail.angle = 270
+            elsif before_tail.left < tail.left
+              tail.angle = 180
+            elsif before_tail.left > tail.left
+              tail.angle = 0
+            end
+          end
+        else
+          parts[-1].angle = before_tail.angle
+        end
+      end
     end
   end
 end
