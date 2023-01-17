@@ -206,6 +206,8 @@ module Scene
           head.new_direction = DIR_DOWN if args.inputs.down
         end
 
+        args.state.gameplay.gem.angle = Math.sin(args.state.tick_count / 12) * 10
+
         if head.intersect_rect?(args.state.gameplay.gem)
           eat_gem(args)
         end
