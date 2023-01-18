@@ -43,8 +43,17 @@ module Scene
         :controls_title,
         x: 24.from_right, y: 84.from_bottom,
         size: SIZE_SM, align: ALIGN_RIGHT)
+
+      controls_key = if args.inputs.controller_one.connected
+                       :controls_gamepad
+                     elsif args.gtk.platform?(:mobile)
+                       :controls_touch
+                     else
+                       :controls_keyboard
+                     end
+
       labels << label(
-        args.inputs.controller_one.connected ? :controls_gamepad : :controls_keyboard,
+        controls_key,
         x: 24.from_right, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_RIGHT)
 
