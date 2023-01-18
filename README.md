@@ -9,6 +9,20 @@ Built with [DragonRuby Game Toolkit](https://dragonruby.org/toolkit/game) Pro v4
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)  
 To the extent possible under law, [Brett Chalupa](https://brettchalupa.itch.io./slither) has waived all copyright and related or neighboring rights to Slither. This work is published from: United States.
 
+## Developing
+
+Replace `mygame` in the DRGTK engine:
+
+```
+rm -rf mygame
+git clone git@github.com:brettchalupa/slither.git mygame
+```
+
+### iOS
+
+- Drop in `metadata/ios_metadata.txt` with the proper config
+- Add in the proper provisioning profiles in the engine root
+
 ## Debug Shortcuts
 
 - <kbd>8</kbd> — pause gameplay movement
