@@ -30,3 +30,64 @@ def pause_down?(inputs)
   PAUSE_KEYS.any? { |k| inputs.keyboard.key_down.send(k) } ||
     inputs.controller_one.key_down&.start
 end
+
+def up?(args)
+  args.inputs.up || args.state.swipe.up
+end
+
+def down?(args)
+  args.inputs.down || args.state.swipe.down
+end
+
+def left?(args)
+  args.inputs.left || args.state.swipe.left
+end
+
+def right?(args)
+  args.inputs.right || args.state.swipe.right
+end
+
+def track_swipe(args)
+  reset_swipe(args) if args.state.swipe.nil? || args.state.swipe.stop_tick
+  swipe = args.state.swipe
+
+  if args.inputs.mouse.click
+    swipe.merge!({
+      start_tick: args.state.tick_count,
+      start_x: args.inputs.mouse.x,
+      start_y: args.inputs.mouse.y,
+    })
+  end
+
+  if args.inputs.mouse.up
+    swipe.merge!({
+      stop_x: args.inputs.mouse.x,
+      stop_y: args.inputs.mouse.y,
+    })
+
+    p1 = [swipe.start_x, swipe.start_y]
+    p2 = [swipe.stop_x, swipe.stop_y]
+    dist = args.geometry.distance(p1, p2)
+
+    if dist > 50 # min distance threshold
+      angle = args.geometry.angle_from(p1, p2)
+      swipe.angle = angle
+      swipe.dist = dist
+      swipe.stop_tick = args.state.tick_count
+
+      if angle > 315 || swipe.angle < 45
+        swipe.left = true
+      elsif angle >= 45 && angle <= 135
+        swipe.down = true
+      elsif angle > 135 && angle < 225
+        swipe.right = true
+      elsif angle >= 225 && angle <= 315
+        swipe.up = true
+      end
+    end
+  end
+end
+
+def reset_swipe(args)
+  args.state.swipe = { up: false, down: false, right: false, left: false }
+end

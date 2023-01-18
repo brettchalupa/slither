@@ -5,6 +5,7 @@ module Sprite
     bud: "sprites/bud.png",
     logo: "sprites/logo.png",
     spritesheet: "sprites/spritesheet.png",
+    pause: "sprites/pause.png",
   }
 
   class << self

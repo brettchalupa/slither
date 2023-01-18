@@ -102,11 +102,11 @@ module Scene
         end
 
         if head.direction == DIR_UP || head.direction == DIR_DOWN
-          head.new_direction = DIR_RIGHT if args.inputs.right
-          head.new_direction = DIR_LEFT if args.inputs.left
+          head.new_direction = DIR_RIGHT if right?(args)
+          head.new_direction = DIR_LEFT if left?(args)
         else
-          head.new_direction = DIR_UP if args.inputs.up
-          head.new_direction = DIR_DOWN if args.inputs.down
+          head.new_direction = DIR_UP if up?(args)
+          head.new_direction = DIR_DOWN if down?(args)
         end
 
         args.state.gameplay.gem.angle = Math.sin(args.state.tick_count / 12) * 10
@@ -118,13 +118,30 @@ module Scene
         game_over(args)
       end
 
-      debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
-      draw_bg(args, BLUE)
-      args.outputs.sprites << [
+      sprites = [
         args.state.gameplay.parts,
         args.state.gameplay.gem,
         args.state.gameplay.head
       ]
+
+      if args.gtk.platform?(:mobile) || args.state.render_debug_details
+        pause_button = {
+          x: 84.from_right,
+          y: 84.from_top,
+          w: 64,
+          h: 64,
+          path: Sprite.for(:pause),
+        }
+        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(pause_button)
+          play_sfx(args, :select)
+          return Scene.switch(args, :paused, reset: true)
+        end
+        sprites << pause_button
+      end
+
+      debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
+      draw_bg(args, BLUE)
+      args.outputs.sprites << sprites
     end
 
     def game_over(args)
@@ -135,13 +152,13 @@ module Scene
           font: FONT_BOLD_ITALIC,
         ),
         label(
-          :restart,
+          args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
           x: args.grid.w / 2, y: 360,
           align: ALIGN_CENTER, size: SIZE_MD,
           font: FONT_ITALIC,
         )
       ]
-      if primary_down?(args.inputs)
+      if primary_down?(args.inputs) || args.inputs.mouse.click
         play_sfx(args, :select)
         Scene.switch(args, :gameplay, reset: true)
       end

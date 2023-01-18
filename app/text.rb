@@ -18,6 +18,7 @@ TEXT = {
   paused: "Paused",
   quit: "Quit",
   restart: "Press CONFIRM to Restart",
+  restart_mobile: "Tap to Restart",
   resume: "Resume",
   return_to_main_menu: "Return to Main Menu",
   settings: "Settings",

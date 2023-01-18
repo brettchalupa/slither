@@ -1,17 +1,19 @@
 # Code that only gets run once on game start
 def init(args)
   GameSetting.load_settings(args)
-  args.gtk.hide_cursor
+  debug? ? args.gtk.show_cursor : args.gtk.hide_cursor
 end
 
 def tick(args)
   init(args) if args.state.tick_count == 0
 
   # this looks good on non 16:9 resolutions; game background is different
-  args.outputs.background_color = TRUE_BLACK.values
+  args.outputs.background_color = DARK_PURPLE.values
 
   args.state.has_focus ||= true
   args.state.scene ||= :main_menu
+
+  track_swipe(args) if args.gtk.platform?(:mobile) || debug?
 
   Scene.send("tick_#{args.state.scene}", args)
 
@@ -24,7 +26,7 @@ def debug_tick(args)
   return unless debug?
 
   debug_label(
-    args, args.grid.right - 24, args.grid.top - 10,
+    args, 24.from_right, 32.from_bottom,
     "v#{version} | DR v#{$gtk.version} (#{$gtk.platform}) | Ticks: #{args.state.tick_count} | FPS: #{args.gtk.current_framerate.round}",
     ALIGN_RIGHT)
 

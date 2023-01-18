@@ -26,29 +26,35 @@ module Menu
         label = label(
           text,
           x: args.grid.w / 2,
-          y: 360 + (options.length - i * 52),
+          y: 360 + (options.length - i * 60),
           align: ALIGN_CENTER,
           size: SIZE_MD
         )
+        label.key = option[:key]
         label_size = args.gtk.calcstringbox(label.text, label.size_enum)
         labels << label
         if menu_state.current_option_i == i
-          args.outputs.solids << {
-            x: label.x - (label_size[0] / 1.4) - 24 + (Math.sin(args.state.tick_count / 8) * 4),
-            y: label.y - 22,
-            w: 16,
-            h: 16,
-            key: option[:key],
-          }.merge(WHITE)
+          unless args.gtk.platform?(:mobile)
+            args.outputs.solids << {
+              x: label.x - (label_size[0] / 1.4) - 24 + (Math.sin(args.state.tick_count / 8) * 4),
+              y: label.y - 22,
+              w: 16,
+              h: 16,
+            }.merge(WHITE)
+          end
         end
       end
 
-      if args.inputs.mouse.click
-        labels.each do |l|
-          if args.inputs.mouse.inside_rect?(l.merge(w: 200, h: 100))
-            o = options.select { |o| o[:key] == l[:key] }
-            o[:on_select].call(args)
-          end
+      labels.each do |l|
+        button_rect = { w: 320, h: 50, x: l.x - 160, y: l.y - 40 }.merge(WHITE)
+        if args.gtk.platform?(:mobile) || args.state.render_debug_details
+          args.outputs.borders << button_rect
+        end
+
+        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(button_rect)
+          o = options.find { |o| o[:key] == l[:key] }
+          play_sfx(args, :menu)
+          o[:on_select].call(args) if o
         end
       end
 

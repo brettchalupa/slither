@@ -22,6 +22,7 @@ git clone git@github.com:brettchalupa/slither.git mygame
 
 - Drop in `metadata/ios_metadata.txt` with the proper config
 - Add in the proper provisioning profiles in the engine root
+- Start up the hot reload version: `$wizards.ios.start env: :hotload`
 
 ## Debug Shortcuts
 
