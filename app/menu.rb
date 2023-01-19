@@ -16,6 +16,7 @@ module Menu
 
       labels = []
 
+      spacer = (args.gtk.platform?(:mobile) || args.state.render_debug_details) ? 100 : 60
       options.each.with_index do |option, i|
         text = case option.kind
                when :toggle
@@ -23,10 +24,11 @@ module Menu
                else
                  text(option[:key])
                end
+
         label = label(
           text,
           x: args.grid.w / 2,
-          y: 360 + (options.length - i * 60),
+          y: 360 + (options.length - i * spacer),
           align: ALIGN_CENTER,
           size: SIZE_MD
         )
@@ -46,12 +48,12 @@ module Menu
       end
 
       labels.each do |l|
-        button_rect = { w: 320, h: 50, x: l.x - 160, y: l.y - 40 }.merge(WHITE)
+        button_border = { w: 340, h: 80, x: l.x - 170, y: l.y - 55 }.merge(WHITE)
         if args.gtk.platform?(:mobile) || args.state.render_debug_details
-          args.outputs.borders << button_rect
+          args.outputs.borders << button_border
         end
 
-        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(button_rect)
+        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(button_border)
           o = options.find { |o| o[:key] == l[:key] }
           play_sfx(args, :menu)
           o[:on_select].call(args) if o
