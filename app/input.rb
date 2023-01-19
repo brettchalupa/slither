@@ -51,7 +51,7 @@ def track_swipe(args)
   reset_swipe(args) if args.state.swipe.nil? || args.state.swipe.stop_tick
   swipe = args.state.swipe
 
-  if args.inputs.mouse.click
+  if args.inputs.mouse.down
     swipe.merge!({
       start_tick: args.state.tick_count,
       start_x: args.inputs.mouse.x,
@@ -59,17 +59,17 @@ def track_swipe(args)
     })
   end
 
-  if args.inputs.mouse.up
-    swipe.merge!({
-      stop_x: args.inputs.mouse.x,
-      stop_y: args.inputs.mouse.y,
-    })
-
+  if swipe.start_tick && swipe.start_x && swipe.start_y
     p1 = [swipe.start_x, swipe.start_y]
-    p2 = [swipe.stop_x, swipe.stop_y]
+    p2 = [args.inputs.mouse.x, args.inputs.mouse.y]
     dist = args.geometry.distance(p1, p2)
 
     if dist > 50 # min distance threshold
+      swipe.merge!({
+        stop_x: p2[0],
+        stop_y: p2[1],
+      })
+
       angle = args.geometry.angle_from(p1, p2)
       swipe.angle = angle
       swipe.dist = dist
