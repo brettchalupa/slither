@@ -10,8 +10,7 @@ module Scene
 
       # auto-pause & input-based pause
       if !args.state.has_focus || pause_down?(args)
-        play_sfx(args, :select)
-        return Scene.switch(args, :paused, reset: true)
+        return pause(args)
       end
 
       args.state.gameplay.movement_tick_delay ||= 20
@@ -133,8 +132,7 @@ module Scene
           path: Sprite.for(:pause),
         }
         if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(pause_button)
-          play_sfx(args, :select)
-          return Scene.switch(args, :paused, reset: true)
+          return pause(args)
         end
         sprites << pause_button
       end
@@ -142,6 +140,12 @@ module Scene
       debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
       draw_bg(args, BLUE)
       args.outputs.sprites << sprites
+    end
+
+    def pause(args)
+      play_sfx(args, :select)
+      pause_music(args)
+      Scene.switch(args, :paused, reset: true)
     end
 
     def game_over(args)

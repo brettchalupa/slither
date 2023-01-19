@@ -14,6 +14,7 @@ TEXT = {
   game_over: "GAME OVER",
   length: "LENGTH",
   made_by: "A game by",
+  music: "Music",
   off: "OFF",
   on: "ON",
   paused: "Paused",

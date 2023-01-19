@@ -7,7 +7,7 @@ module Scene
       options = [
         {
           key: :resume,
-          on_select: -> (args) { Scene.switch(args, :gameplay) }
+          on_select: -> (args) { resume_music(args); Scene.switch(args, :gameplay) }
         },
         {
           key: :settings,
