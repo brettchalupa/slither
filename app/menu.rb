@@ -36,7 +36,7 @@ module Menu
         label_size = args.gtk.calcstringbox(label.text, label.size_enum)
         labels << label
         if menu_state.current_option_i == i
-          unless args.gtk.platform?(:mobile)
+          if !args.gtk.platform?(:mobile) || (args.gtk.platform?(:mobile) && args.inputs.controller_one.connected)
             args.outputs.solids << {
               x: label.x - (label_size[0] / 1.4) - 24 + (Math.sin(args.state.tick_count / 8) * 4),
               y: label.y - 22,
