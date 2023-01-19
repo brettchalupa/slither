@@ -2,7 +2,7 @@ devid=brettchalupa
 devtitle=Brett Chalupa
 gameid=slither
 gametitle=Slither
-version=0.2-dev
+version=1.0-dev
 icon=metadata/icon.png
 
 # === Flags available at all licensing tiers ===
