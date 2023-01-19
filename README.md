@@ -24,6 +24,11 @@ git clone git@github.com:brettchalupa/slither.git mygame
 - Add in the proper provisioning profiles in the engine root
 - Start up the hot reload version: `$wizards.ios.start env: :hotload`
 
+### Android
+
+1. Install Android Studio
+2. [Follow these steps](http://docs.dragonruby.org.s3-website-us-east-1.amazonaws.com/#--deploying-to-mobile-devices)
+
 ## Debug Shortcuts
 
 - <kbd>8</kbd> — pause gameplay movement
