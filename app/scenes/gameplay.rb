@@ -197,18 +197,23 @@ module Scene
         next_y = 260
       end
 
-      labels << label(
-        args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
-        x: args.grid.w / 2, y: next_y,
-        align: ALIGN_CENTER, size: SIZE_MD,
-        font: FONT_BOLD_ITALIC,
-      )
+      args.state.gameplay.game_over_restart_counter ||= 30
+      args.state.gameplay.game_over_restart_counter -= 1
+      if args.state.gameplay.game_over_restart_counter < 0
+        labels << label(
+          args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
+          x: args.grid.w / 2, y: next_y,
+          align: ALIGN_CENTER, size: SIZE_MD,
+          font: FONT_BOLD_ITALIC,
+        ).merge(a: (args.state.tick_count % 100) + 155)
+
+        if primary_down?(args.inputs) || args.inputs.mouse.click
+          play_sfx(args, :select)
+          Scene.switch(args, :gameplay, reset: true)
+        end
+      end
 
       args.outputs.labels << labels
-      if primary_down?(args.inputs) || args.inputs.mouse.click
-        play_sfx(args, :select)
-        Scene.switch(args, :gameplay, reset: true)
-      end
     end
 
     def new_high_score?(args)
