@@ -3,11 +3,11 @@ module Tile
   MAP = {
     body: {
       tile_x: 504,
-      tile_y: 270,
+      tile_y: 268,
     },
     corner: {
       tile_x: 1176,
-      tile_y: 78,
+      tile_y: 74,
     },
     head: {
       tile_x: 490,
