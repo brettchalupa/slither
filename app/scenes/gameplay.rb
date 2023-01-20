@@ -27,7 +27,7 @@ module Scene
       parts = args.state.gameplay.parts
       args.state.gameplay.gem ||= spawn_gem(args)
       args.outputs.labels << label(
-        "#{text(:length)}: #{args.state.gameplay.parts.length}",
+        "#{text(:length)}: #{args.state.gameplay.parts.length}" + "#{new_high_score?(args) ? '!' : nil }",
         x: Tile::SIZE.from_left, y: 20.from_top, size: SIZE_LG, font: FONT_BOLD)
 
       unless args.state.gameplay.game_over
@@ -84,7 +84,7 @@ module Scene
           position_tail(args, head, parts)
 
           if args.state.gameplay.parts.any? { |p| head.intersect_rect?(p) }
-            args.state.gameplay.game_over = true
+            end_the_game(args)
           end
         else
           if !args.state.gameplay.stop_movement
@@ -150,24 +150,53 @@ module Scene
       Scene.switch(args, :paused, reset: true)
     end
 
+    def end_the_game(args)
+      args.state.gameplay.game_over = true
+
+      if new_high_score?(args)
+        args.state.gameplay.new_high_score = true
+        HighScore.save(args, args.state.gameplay.parts.length)
+      end
+
+      raise FinishTick.new
+    end
+
     def game_over(args)
-      args.outputs.labels << [
+      labels = [
         label(
           :game_over, x: args.grid.w / 2, y: 500,
           align: ALIGN_CENTER, size: SIZE_XL,
           font: FONT_BOLD_ITALIC,
         ),
-        label(
-          args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
-          x: args.grid.w / 2, y: 360,
-          align: ALIGN_CENTER, size: SIZE_LG,
-          font: FONT_BOLD_ITALIC,
-        )
       ]
+
+      next_y = 380
+      if args.state.gameplay.new_high_score
+        labels << label(
+          :new_high_score,
+          x: args.grid.w / 2, y: next_y,
+          align: ALIGN_CENTER, size: SIZE_MD,
+          font: FONT_BOLD,
+        )
+        next_y = 260
+      end
+
+      labels << label(
+        args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
+        x: args.grid.w / 2, y: next_y,
+        align: ALIGN_CENTER, size: SIZE_MD,
+        font: FONT_BOLD_ITALIC,
+      )
+
+      args.outputs.labels << labels
       if primary_down?(args.inputs) || args.inputs.mouse.click
         play_sfx(args, :select)
         Scene.switch(args, :gameplay, reset: true)
       end
+    end
+
+    def new_high_score?(args)
+      HighScore.get(args) < args.state.gameplay.parts.length
     end
 
     def spawn_gem(args)

@@ -33,8 +33,16 @@ module Scene
       labels = []
       labels << label(
         "v#{version}",
-        x: 32.from_left, y: 24.from_top,
+        x: 32.from_left, y: 32.from_top,
         size: SIZE_XS, align: ALIGN_LEFT)
+
+      high_score = HighScore.get(args)
+      if high_score > 0
+        labels << label(
+          "#{text(:high_score)}: #{high_score}",
+          x: 32.from_right, y: 32.from_top,
+          size: SIZE_SM, align: ALIGN_RIGHT, font: FONT_BOLD)
+      end
       labels << label(
         "#{text(:made_by)} #{dev_title}",
         x: 32.from_left, y: 48.from_bottom,

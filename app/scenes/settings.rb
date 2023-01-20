@@ -28,13 +28,20 @@ module Scene
           end
         },
         {
+          key: :reset_high_score,
+          on_select: -> (args) do
+            HighScore.save(args, 0)
+            play_sfx(args, :select)
+          end
+        },
+        {
           key: :back,
           on_select: -> (args) { Scene.switch(args, :back) }
         },
       ]
 
       if args.gtk.platform?(:desktop)
-        options.insert(options.length - 1, {
+        options.insert(options.length - 2, {
           key: :fullscreen,
           kind: :toggle,
           setting_val: args.state.setting.fullscreen,

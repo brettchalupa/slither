@@ -152,6 +152,13 @@ test :collide do |args, assert|
   end
 end
 
+test :high_score_get do |args, assert|
+  it "returns the val from args.state" do
+    args.state.high_score = 10
+    assert.equal!(HighScore.get(args), 10)
+  end
+end
+
 # add your tests here
 
 run_tests
