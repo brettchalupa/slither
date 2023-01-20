@@ -30,7 +30,6 @@ YELLOW = { r: 240, g: 232, b: 89 }
 
 DARK_BLUE = { r: 22, g: 122, b: 188 }
 DARK_GREEN = { r: 5, g: 84, b: 12 }
-DARK_PURPLE = { r: 66, g: 12, b: 109 }
 DARK_PURPLE = { r: 103, g: 5, b: 98 }
 DARK_RED = { r: 214, g: 26, b: 12 }
 DARK_YELLOW = { r: 120, g: 97, b: 7 }
