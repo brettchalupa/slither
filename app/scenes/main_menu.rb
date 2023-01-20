@@ -33,15 +33,15 @@ module Scene
       labels = []
       labels << label(
         "v#{version}",
-        x: 24.from_left, y: 24.from_top,
+        x: 32.from_left, y: 24.from_top,
         size: SIZE_XS, align: ALIGN_LEFT)
       labels << label(
         "#{text(:made_by)} #{dev_title}",
-        x: 24.from_left, y: 48.from_bottom,
+        x: 32.from_left, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_LEFT)
       labels << label(
         :controls_title,
-        x: 24.from_right, y: 84.from_bottom,
+        x: 32.from_right, y: 84.from_bottom,
         size: SIZE_SM, align: ALIGN_RIGHT)
 
       controls_key = if args.inputs.controller_one.connected
@@ -54,7 +54,7 @@ module Scene
 
       labels << label(
         controls_key,
-        x: 24.from_right, y: 48.from_bottom,
+        x: 32.from_right, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_RIGHT)
 
       args.outputs.labels << labels

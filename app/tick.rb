@@ -7,9 +7,6 @@ end
 def tick(args)
   init(args) if args.state.tick_count == 0
 
-  # this looks good on non 16:9 resolutions; game background is different
-  args.outputs.background_color = DARK_PURPLE.values
-
   args.state.has_focus ||= true
   args.state.scene ||= :main_menu
 
@@ -70,8 +67,6 @@ def debug_label(args, x, y, text, align=ALIGN_LEFT)
   args.outputs.debug << { x: x, y: y, text: text, alignment_enum: align }.merge(WHITE).label!
 end
 
-# different than background_color... use this to change the bg color for the
-# visible portion of the game
 def draw_bg(args, color)
-  args.outputs.solids << { x: args.grid.left, y: args.grid.bottom, w: args.grid.w, h: args.grid.h }.merge(color)
+  args.outputs.background_color = color.values
 end

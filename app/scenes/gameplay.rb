@@ -141,6 +141,7 @@ module Scene
       debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
       args.outputs.solids << { x: args.grid.left + Tile::SIZE, y: args.grid.bottom + Tile::SIZE, w: args.grid.w - Tile::SIZE * 2, h: args.grid.h - Tile::SIZE * 2 }.merge(args.state.gameplay.bg_color)
       args.outputs.sprites << sprites
+      draw_bg(args, DARK_PURPLE)
     end
 
     def pause(args)
