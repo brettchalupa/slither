@@ -9,7 +9,7 @@ module Menu
     #     on_select: -> (args) { "do some stuff in this lambda" }
     #   }
     # ]
-    def tick(args, state_key, options)
+    def tick(args, state_key, options, menu_y: 420)
       args.state.send(state_key).current_option_i ||= 0
       args.state.send(state_key).hold_delay ||= 0
       menu_state = args.state.send(state_key)
@@ -28,7 +28,7 @@ module Menu
         label = label(
           text,
           x: args.grid.w / 2,
-          y: 360 + (options.length - i * spacer),
+          y: menu_y + (options.length - i * spacer),
           align: ALIGN_CENTER,
           size: SIZE_MD
         )
