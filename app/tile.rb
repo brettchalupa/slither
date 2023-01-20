@@ -17,6 +17,14 @@ module Tile
       tile_x: 45,
       tile_y: 1036,
     },
+    head_open: {
+      tile_x: 490,
+      tile_y: 64,
+    },
+    head_only_open: {
+      tile_x: 28,
+      tile_y: 68,
+    },
     tail: {
       tile_x: 260,
       tile_y: 272,

@@ -147,3 +147,9 @@ def reset_color(entity)
   entity.g = nil
   entity.b = nil
 end
+
+# returns a hash of the x and y position coords
+def center_of(entity)
+  raise StandardError.new("entity does not have needed properties to find center; must have x, y, w, and h properties") unless entity.x && entity.y && entity.h && entity.w
+  { x: entity.x + entity.w / 2, y: entity.y + entity.h / 2 }
+end

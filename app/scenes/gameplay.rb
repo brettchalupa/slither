@@ -37,10 +37,6 @@ module Scene
           prev_pos = [head.x, head.y]
           prev_angle = head.angle
 
-          if args.state.gameplay.parts.length >= 1
-            head.merge!(Tile.for(:head))
-          end
-
           head.direction = head.new_direction
           case head.direction
           when DIR_UP
@@ -65,6 +61,7 @@ module Scene
             next_prev_angle = p.angle
             p.x, p.y = prev_pos
             p.a = 255
+            p.active = true
             p.angle = prev_angle
             p.corner = false # reset
             if p.angle == 180
@@ -82,10 +79,6 @@ module Scene
           check_for_corners(args, head, parts)
 
           position_tail(args, head, parts)
-
-          if args.state.gameplay.parts.any? { |p| head.intersect_rect?(p) }
-            end_the_game(args)
-          end
         else
           if !args.state.gameplay.stop_movement
             args.state.gameplay.tick_counter += 1
@@ -112,7 +105,28 @@ module Scene
 
         args.state.gameplay.gem.angle = Math.sin(args.state.tick_count / 12) * 10
 
-        if head.intersect_rect?(args.state.gameplay.gem)
+        active_parts = args.state.gameplay.parts.select { |p| p.active }
+
+        if active_parts.length >= 1
+          head.merge!(Tile.for(:head))
+        else
+          head.merge!(Tile.for(:head_only))
+        end
+
+        gem = args.state.gameplay.gem
+        if args.geometry.distance(center_of(head), center_of(gem)) < Tile::SIZE * 1.5
+          if active_parts.length >= 1
+            head.merge!(Tile.for(:head_open))
+          else
+            head.merge!(Tile.for(:head_only_open))
+          end
+        end
+
+        if active_parts.any? { |p| head.intersect_rect?(p) }
+          end_the_game(args)
+        end
+
+        if head.intersect_rect?(gem)
           eat_gem(args)
         end
       else
@@ -217,6 +231,7 @@ module Scene
       play_sfx(args, :menu)
       args.state.gameplay.parts << args.state.gameplay.head.clone
         .merge({ a: 0 })
+        .merge({ active: false })
         .merge(Tile.for(:tail))
 
       # increase speed every 5 parts

@@ -20,8 +20,8 @@ module Scene
       Tile::MAP.each.with_index do |kv, i|
         k = kv[0]
         v = kv[1]
-        x = Tile::SIZE * i + 200
-        labels << label(k.to_s, x: x + Tile::SIZE / 2, y: 200.from_top, size: SIZE_XS, align: ALIGN_CENTER)
+        x = (Tile::SIZE * 1.5 ) * i + 200
+        labels << label(k.to_s, x: x + Tile::SIZE / 2, y: (i % 2 == 0 ? 200.from_top : 320.from_top), size: SIZE_XS, align: ALIGN_CENTER)
         sprites << { x: x, y: 320.from_top, w: Tile::SIZE, h: Tile::SIZE }.merge(Tile.for(k))
       end
 
