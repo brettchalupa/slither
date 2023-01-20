@@ -26,7 +26,7 @@ module Scene
       args.state.gameplay.gem ||= spawn_gem(args)
       args.outputs.labels << label(
         "#{text(:length)}: #{args.state.gameplay.parts.length}",
-        x: 20, y: 700, size: SIZE_LG, font: FONT_BOLD)
+        x: 20.from_left, y: 20.from_top, size: SIZE_LG, font: FONT_BOLD)
 
       unless args.state.gameplay.game_over
         if args.state.gameplay.tick_counter >= args.state.gameplay.movement_tick_delay
@@ -90,14 +90,14 @@ module Scene
           end
         end
 
-        if head.left >= args.grid.right
-          head.x = args.grid.left
-        elsif head.right <= args.grid.left
-          head.x = args.grid.right - head.w
-        elsif head.bottom >= args.grid.top
-          head.y = args.grid.bottom
-        elsif head.top <= args.grid.bottom
-          head.y = args.grid.top - head.h
+        if head.left >= args.grid.right - Tile::SIZE
+          head.x = args.grid.left + Tile::SIZE
+        elsif head.right <= args.grid.left + Tile::SIZE
+          head.x = args.grid.right - head.w - Tile::SIZE
+        elsif head.bottom >= args.grid.top - Tile::SIZE
+          head.y = args.grid.bottom + Tile::SIZE
+        elsif head.top <= args.grid.bottom + Tile::SIZE
+          head.y = args.grid.top - head.h - Tile::SIZE
         end
 
         if head.direction == DIR_UP || head.direction == DIR_DOWN
@@ -125,10 +125,10 @@ module Scene
 
       if args.gtk.platform?(:mobile) || args.state.render_debug_details
         pause_button = {
-          x: 84.from_right,
-          y: 84.from_top,
-          w: 64,
-          h: 64,
+          x: 72.from_right,
+          y: 72.from_top,
+          w: 52,
+          h: 52,
           path: Sprite.for(:pause),
         }
         if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(pause_button)
@@ -138,7 +138,7 @@ module Scene
       end
 
       debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
-      draw_bg(args, BLUE)
+      args.outputs.solids << { x: args.grid.left + Tile::SIZE, y: args.grid.bottom + Tile::SIZE, w: args.grid.w - Tile::SIZE * 2, h: args.grid.h - Tile::SIZE * 2 }.merge(BLUE)
       args.outputs.sprites << sprites
     end
 
@@ -159,7 +159,7 @@ module Scene
           args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
           x: args.grid.w / 2, y: 360,
           align: ALIGN_CENTER, size: SIZE_MD,
-          font: FONT_ITALIC,
+          font: FONT_BOLD_ITALIC,
         )
       ]
       if primary_down?(args.inputs) || args.inputs.mouse.click
@@ -170,8 +170,8 @@ module Scene
 
     def spawn_gem(args)
       gem = {
-        x: rand(args.grid.w / Tile::SIZE) * Tile::SIZE,
-        y: rand(args.grid.h / Tile::SIZE) * Tile::SIZE,
+        x: rand((args.grid.w / Tile::SIZE) - 2) * Tile::SIZE + Tile::SIZE,
+        y: rand((args.grid.h / Tile::SIZE) - 2) * Tile::SIZE + Tile::SIZE,
         w: Tile::SIZE, h: Tile::SIZE
       }.merge(Tile.for(:gem))
 
