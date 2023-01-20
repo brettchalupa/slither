@@ -16,6 +16,7 @@ module Scene
       args.state.gameplay.movement_tick_delay ||= 20
       args.state.gameplay.tick_counter ||= 0
       args.state.gameplay.game_over ||= false
+      args.state.gameplay.bg_color ||= BLUE
       args.state.gameplay.parts ||= []
       args.state.gameplay.head ||= {
         x: Tile::SIZE * 5, y: Tile::SIZE * 4, new_direction: DIR_UP,
@@ -138,7 +139,7 @@ module Scene
       end
 
       debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
-      args.outputs.solids << { x: args.grid.left + Tile::SIZE, y: args.grid.bottom + Tile::SIZE, w: args.grid.w - Tile::SIZE * 2, h: args.grid.h - Tile::SIZE * 2 }.merge(BLUE)
+      args.outputs.solids << { x: args.grid.left + Tile::SIZE, y: args.grid.bottom + Tile::SIZE, w: args.grid.w - Tile::SIZE * 2, h: args.grid.h - Tile::SIZE * 2 }.merge(args.state.gameplay.bg_color)
       args.outputs.sprites << sprites
     end
 
@@ -191,6 +192,18 @@ module Scene
       # increase speed every 5 parts
       if args.state.gameplay.movement_tick_delay > 1 && args.state.gameplay.parts.length % 5 == 0
         args.state.gameplay.movement_tick_delay -= 1
+      end
+
+      if args.state.gameplay.parts.length == 10
+        args.state.gameplay.bg_color = ORANGE
+      elsif args.state.gameplay.parts.length == 20
+        args.state.gameplay.bg_color = PINK
+      elsif args.state.gameplay.parts.length == 30
+        args.state.gameplay.bg_color = YELLOW
+      elsif args.state.gameplay.parts.length == 40
+        args.state.gameplay.bg_color = RED
+      elsif args.state.gameplay.parts.length == 50
+        args.state.gameplay.bg_color = WHITE
       end
 
       args.state.gameplay.gem = spawn_gem(args)
