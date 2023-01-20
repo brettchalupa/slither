@@ -165,6 +165,8 @@ module Scene
     end
 
     def end_the_game(args)
+      play_sfx(args, :game_over)
+      pause_music(args)
       args.state.gameplay.game_over = true
 
       if new_high_score?(args)

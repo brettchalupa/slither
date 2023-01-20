@@ -30,6 +30,7 @@ module Scene
         case scene
         when :gameplay
           args.state.gameplay = nil
+          play_music(args, :slither)
         end
       end
 

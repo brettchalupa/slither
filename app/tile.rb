@@ -22,7 +22,7 @@ module Tile
       tile_y: 64,
     },
     head_only_open: {
-      tile_x: 28,
+      tile_x: 32,
       tile_y: 68,
     },
     tail: {

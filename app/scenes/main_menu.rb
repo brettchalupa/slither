@@ -6,7 +6,7 @@ module Scene
       options = [
         {
           key: :start,
-          on_select: -> (args) { play_music(args, :slither); Scene.switch(args, :gameplay, reset: true) }
+          on_select: -> (args) { Scene.switch(args, :gameplay, reset: true) }
         },
         {
           key: :settings,
