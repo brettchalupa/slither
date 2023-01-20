@@ -26,7 +26,7 @@ module Scene
       args.state.gameplay.gem ||= spawn_gem(args)
       args.outputs.labels << label(
         "#{text(:length)}: #{args.state.gameplay.parts.length}",
-        x: 20.from_left, y: 20.from_top, size: SIZE_LG, font: FONT_BOLD)
+        x: Tile::SIZE.from_left, y: 20.from_top, size: SIZE_LG, font: FONT_BOLD)
 
       unless args.state.gameplay.game_over
         if args.state.gameplay.tick_counter >= args.state.gameplay.movement_tick_delay
@@ -152,13 +152,13 @@ module Scene
       args.outputs.labels << [
         label(
           :game_over, x: args.grid.w / 2, y: 500,
-          align: ALIGN_CENTER, size: SIZE_LG,
+          align: ALIGN_CENTER, size: SIZE_XL,
           font: FONT_BOLD_ITALIC,
         ),
         label(
           args.gtk.platform?(:mobile) ? :restart_mobile : :restart,
           x: args.grid.w / 2, y: 360,
-          align: ALIGN_CENTER, size: SIZE_MD,
+          align: ALIGN_CENTER, size: SIZE_LG,
           font: FONT_BOLD_ITALIC,
         )
       ]

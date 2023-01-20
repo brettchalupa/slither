@@ -39,6 +39,7 @@ SIZE_XS = 0
 SIZE_SM = 4
 SIZE_MD = 6
 SIZE_LG = 10
+SIZE_XL = 12
 
 FONT_REGULAR = "fonts/Atkinson-Hyperlegible-Regular-102.ttf"
 FONT_ITALIC = "fonts/Atkinson-Hyperlegible-Italic-102.ttf"
