@@ -147,7 +147,13 @@ module Scene
           h: 52,
           path: Sprite.for(:pause),
         }
-        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(pause_button)
+        pause_rect = pause_button.dup
+        pause_padding = 12
+        pause_rect.x -= pause_padding
+        pause_rect.y -= pause_padding
+        pause_rect.w += pause_padding * 2
+        pause_rect.h += pause_padding * 2
+        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(pause_rect)
           return pause(args)
         end
         sprites << pause_button
