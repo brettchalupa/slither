@@ -22,7 +22,7 @@ WHITE = { r: 255, g: 255, b: 255 }
 
 BLUE = { r: 42, g: 133, b: 216 }
 GREEN = { r: 42, g: 216, b: 78 }
-ORANGE = { r: 255, g: 173, b: 31 }
+ORANGE = { r: 234, g: 152, b: 9 }
 PINK = { r: 245, g: 146, b:  198 }
 PURPLE = { r: 133, g: 42, b: 216 }
 RED = { r: 231, g: 89, b: 82 }

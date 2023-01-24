@@ -122,7 +122,7 @@ module Scene
           end
         end
 
-        if active_parts.any? { |p| head.intersect_rect?(p) }
+        if !args.state.gameplay.invincible && active_parts.any? { |p| head.intersect_rect?(p) }
           end_the_game(args)
         end
 
@@ -261,7 +261,7 @@ module Scene
       elsif args.state.gameplay.parts.length == 40
         args.state.gameplay.bg_color = RED
       elsif args.state.gameplay.parts.length == 50
-        args.state.gameplay.bg_color = WHITE
+        args.state.gameplay.bg_color = PURPLE
       end
 
       args.state.gameplay.gem = spawn_gem(args)

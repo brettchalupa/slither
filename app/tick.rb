@@ -47,6 +47,11 @@ def debug_tick(args)
     args.state.gameplay.stop_movement = !args.state.gameplay.stop_movement
   end
 
+  if args.inputs.keyboard.key_down.seven
+    play_sfx(args, :select)
+    args.state.gameplay.invincible = !args.state.gameplay.invincible
+  end
+
   if args.inputs.keyboard.key_down.i
     play_sfx(args, :select)
     Sprite.reset_all(args)

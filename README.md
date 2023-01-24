@@ -31,6 +31,7 @@ git clone git@github.com:brettchalupa/slither.git mygame
 
 ## Debug Shortcuts
 
+- <kbd>7</kbd> — toggle invincibility
 - <kbd>8</kbd> — pause gameplay movement
 - <kbd>9</kbd> — eat gem
 - <kbd>0</kbd> — display debug details (ex: framerate)
