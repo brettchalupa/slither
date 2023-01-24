@@ -14,6 +14,28 @@ module Scene
         return pause(args)
       end
 
+      sprites = []
+
+      if args.gtk.platform?(:mobile) || args.state.render_debug_details
+        pause_button = {
+          x: 72.from_right,
+          y: 72.from_top,
+          w: 52,
+          h: 52,
+          path: Sprite.for(:pause),
+        }
+        pause_rect = pause_button.dup
+        pause_padding = 12
+        pause_rect.x -= pause_padding
+        pause_rect.y -= pause_padding
+        pause_rect.w += pause_padding * 2
+        pause_rect.h += pause_padding * 2
+        if args.inputs.mouse.down && args.inputs.mouse.inside_rect?(pause_rect)
+          return pause(args)
+        end
+        sprites << pause_button
+      end
+
       args.state.gameplay.movement_tick_delay ||= 20
       args.state.gameplay.tick_counter ||= 0
       args.state.gameplay.game_over ||= false
@@ -133,31 +155,11 @@ module Scene
         game_over(args)
       end
 
-      sprites = [
+      sprites.push(
         args.state.gameplay.parts,
         args.state.gameplay.gem,
         args.state.gameplay.head
-      ]
-
-      if args.gtk.platform?(:mobile) || args.state.render_debug_details
-        pause_button = {
-          x: 72.from_right,
-          y: 72.from_top,
-          w: 52,
-          h: 52,
-          path: Sprite.for(:pause),
-        }
-        pause_rect = pause_button.dup
-        pause_padding = 12
-        pause_rect.x -= pause_padding
-        pause_rect.y -= pause_padding
-        pause_rect.w += pause_padding * 2
-        pause_rect.h += pause_padding * 2
-        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(pause_rect)
-          return pause(args)
-        end
-        sprites << pause_button
-      end
+      )
 
       debug_label(args, 20.from_left, 32.from_bottom, "gameplay tick_counter: #{args.state.gameplay.tick_counter}")
       args.outputs.solids << { x: args.grid.left + Tile::SIZE, y: args.grid.bottom + Tile::SIZE, w: args.grid.w - Tile::SIZE * 2, h: args.grid.h - Tile::SIZE * 2 }.merge(args.state.gameplay.bg_color)
