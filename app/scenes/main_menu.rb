@@ -14,7 +14,7 @@ module Scene
         },
       ]
 
-      if debug?
+      if debug? && args.state.render_debug_details
         options << {
           key: :tilemap_tester,
           on_select: -> (args) { Scene.switch(args, :tilemap_tester) }
