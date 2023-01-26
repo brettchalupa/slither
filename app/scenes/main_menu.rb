@@ -43,10 +43,23 @@ module Scene
           x: 32.from_right, y: 32.from_top,
           size: SIZE_SM, align: ALIGN_RIGHT, font: FONT_BOLD)
       end
-      labels << label(
+      credit = label(
         "#{text(:made_by)} #{dev_title}",
         x: 32.from_left, y: 48.from_bottom,
         size: SIZE_XS, align: ALIGN_LEFT)
+
+      if args.gtk.platform?(:mobile) || args.state.render_debug_details
+        credit_rect = credit.slice(:x, :y)
+        credit_rect.x -= 14
+        credit_rect.y -= 30
+        credit_rect.merge!({ w: 280, h: 40 }).merge!(WHITE)
+        args.outputs.borders << credit_rect
+        if args.inputs.mouse.up && args.inputs.mouse.inside_rect?(credit_rect)
+          args.gtk.openurl("https://www.brettchalupa.com")
+        end
+      end
+
+      labels << credit
       labels << label(
         :controls_title,
         x: 32.from_right, y: 84.from_bottom,
